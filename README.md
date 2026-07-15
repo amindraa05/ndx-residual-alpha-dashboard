@@ -1,13 +1,16 @@
-﻿# NDX Residual Alpha — Public Performance Brief
+# NDX Residual Alpha — Performance Brief
 
-Interactive research dashboard (static). Simulated results; not investment advice.
+Simulated start capital: **$10,000**
 
-## Live site
-After GitHub Pages is enabled: see repository **Settings → Pages** or the github.io URL printed after deploy.
+## Open
+Open `index.html` in a browser.
 
-## Contents
-- `index.html` — full brief
-- Trade ledgers and equity CSVs for diligence
-- Strategy / methodology notes
+## Navigation
+Overview · Strategy · Data & methodology · Performance · Trade ledger · Cost model · Risk & disclosures
 
-*Hypothetical performance. Past simulated results are not indicative of future results.*
+## Regenerate (internal)
+```bash
+python -m src.strategy.build_top1_top2_dashboard
+```
+
+Confidential. Hypothetical performance. Not investment advice.
