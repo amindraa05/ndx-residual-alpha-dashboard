@@ -1,16 +1,22 @@
-# NDX Residual Alpha — Performance Brief
+﻿# Alpha One vs L3 — NDX residual paper comparison
 
-Simulated start capital: **$10,000**
+Public static brief comparing:
 
-## Open
-Open `index.html` in a browser.
+- **Alpha One** — monthly residual leadership (paper primary)
+- **L3 Risk Sleeve** — weekly resid_mom + frozen vol-target (paper secondary, mid-honest fees)
 
-## Navigation
-Overview · Strategy · Data & methodology · Performance · Trade ledger · Cost model · Risk & disclosures
+**Live:** https://amindraa05.github.io/ndx-residual-alpha-dashboard/
 
-## Regenerate (internal)
+Simulated start capital in this build: **$50,000**.
+
+## Disclaimer
+
+Hypothetical research simulation only. Not investment advice. Past simulated performance is not indicative of future results. Fees are modeled approximations (not a live IBKR invoice).
+
+## Regenerate (private research repo)
+
 ```bash
-python -m src.strategy.build_top1_top2_dashboard
+python -m src.strategy.build_a1_l3_dashboard
 ```
 
-Confidential. Hypothetical performance. Not investment advice.
+Then copy `reports/dashboard/*` into this public site repo.

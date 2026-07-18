@@ -1,18 +1,16 @@
-# NDX Residual Alpha — Strategy Overview
+﻿# Strategy overview (public brief)
 
-Long-only NASDAQ-100 residual leadership versus QQQ.
+## Alpha One (paper primary)
+- Universe: NASDAQ-100 point-in-time members
+- Score: residual vs QQQ, lookback 84 / skip 5
+- Portfolio: top 1, exit outside top 2
+- Rebalance: month-end
+- Costs (claim): 10 bps/side + IBKR-style commission
 
-## Process
-1. Point-in-time NASDAQ-100 membership on each decision date
-2. Residual return = security return − QQQ return
-3. Rank by multi-month residual strength (with short skip window)
-4. Hold top N equal-weight; exit beyond rank threshold
-5. Month-end rebalance with 10 bps slippage and IB-style commissions
+## L3 Risk Sleeve (paper secondary)
+- Score: resid_mom lookback 126 / skip 21
+- Portfolio: force top 1 weekly
+- Overlay: vol-target with frozen scale (train-pinned once)
+- Costs (mid-honest claim): 7 bps/side + IBKR-style commission + 5.5% APR on max(lev-1,0)
 
-## Portfolio constructions
-- **Alpha One:** 84-day lookback / 5-day skip / top 1 / exit outside top 2
-- **Alpha Pair:** 126-day lookback / 10-day skip / top 2 / exit outside top 4
-
-Simulated starting capital: **$10,000**
-
-*Confidential research material. Hypothetical performance. Not an offer to sell securities.*
+Hypothetical. Not investment advice.
