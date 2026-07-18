@@ -87,7 +87,8 @@ pre{background:#070b14;border:1px solid var(--line);border-radius:12px;padding:1
     <div class="badge">Private guide · deployed for you</div>
     <h1>Strategy School &amp; Implementation</h1>
     <p>Deep dive on the three Next Medallion sleeves, how to approximate them on TradingView, and a full paper → live path on IBKR + VPS. Written so you can leave the bot running without guessing.</p>
-    <p class="mute" style="margin-top:8px">Performance dashboard (separate): <a class="toc" href="./index.html" style="color:#c4b5fd">stats site</a> · This page = teach + implement</p>
+    <p class="mute" style="margin-top:8px">Performance dashboard: <a class="toc" href="../" style="color:#c4b5fd">stats site</a>
+    · VPS code repo: <strong>medallion-vps</strong> on GitHub · This page = teach + implement</p>
   </header>
 
   <nav class="nav" id="nav">
@@ -95,6 +96,7 @@ pre{background:#070b14;border:1px solid var(--line);border-radius:12px;padding:1
     <button data-t="strats">3 Strategies</button>
     <button data-t="math">Math engine</button>
     <button data-t="tv">TradingView</button>
+    <button data-t="data">Data pipeline</button>
     <button data-t="paper">Paper trade</button>
     <button data-t="live">Live trade</button>
     <button data-t="vps">VPS &amp; money</button>
@@ -362,6 +364,88 @@ plot(lev, "Approx lev", color=color.new(color.fuchsia, 0), display=display.pane)
         <li>IBKR bot for real membership + orders (this project)</li>
       </ul>
       <p class="mute">If you only use TradingView, treat signals as education, not a fill-identical clone of the dashboard.</p>
+    </div>
+  </section>
+
+  <!-- DATA -->
+  <section class="tab" id="data">
+    <div class="card">
+      <h2>Data on the VPS (don’t panic)</h2>
+      <p>The bot has two brains:</p>
+      <div class="grid2">
+        <div>
+          <h3>1) Ranking brain (disk)</h3>
+          <p>Daily prices for NDX + QQQ + PIT membership files. Used to pick the winner ticker and leverage weight.</p>
+        </div>
+        <div>
+          <h3>2) Broker brain (IBKR)</h3>
+          <p>Gateway places orders and holds positions. It does <strong>not</strong> replace the historical panel by itself.</p>
+        </div>
+      </div>
+      <div class="callout ok">
+        <strong>Deploy package:</strong> GitHub repo <code>medallion-vps</code> — only what you copy to VPS/mini-PC.
+        Research archive (50k files) can stay on the research PC.
+      </div>
+    </div>
+    <div class="card">
+      <h2>What you already have vs what you need forever</h2>
+      <table>
+        <tr><th></th><th>Historical archive (research)</th><th>Forward daily (ops)</th></tr>
+        <tr><td>Purpose</td><td>Backtest / dashboard</td><td>New closes so ranking isn’t frozen</td></tr>
+        <tr><td>Size</td><td>Huge optional</td><td>Slim: ~NDX + QQQ</td></tr>
+        <tr><td>Without paid EODHD</td><td>Keep files on disk forever</td><td><strong>IBKR History</strong> (default in medallion-vps)</td></tr>
+        <tr><td>With EODHD paid</td><td>Same vendor as research</td><td><code>update_eod_daily</code></td></tr>
+      </table>
+      <div class="callout warn">
+        Free EODHD (~20 calls/day) is <strong>not</strong> enough to refresh full NDX every day.
+        Prefer <strong>IBKR historical daily bars</strong> if you won’t pay EODHD monthly.
+      </div>
+    </div>
+    <div class="card">
+      <h2>Mode A schedule (matches our backtest style)</h2>
+      <p>Algo rebalances on the decision day near the US close (not “wait for Monday open”).
+      Residual <strong>skip</strong> means ranking does not need Friday’s residual bar — <strong>Thursday EOD is enough to compute the score</strong>.
+      Fill is near Friday close via live quotes (research used exact close + slip).</p>
+      <table>
+        <tr><th>WIB</th><th>Action</th></tr>
+        <tr><td><strong>Fri 19:00</strong></td><td>Power on · start IB Gateway · 2FA</td></tr>
+        <tr><td><strong>Fri 22:00</strong></td><td><strong>Download/refresh EOD</strong> (IBKR history or EODHD) until NDX+QQQ OK</td></tr>
+        <tr><td><strong>Sat 02:25</strong></td><td>L3: load disk → rank → size by lev → send orders</td></tr>
+        <tr><td><strong>Sat 02:30</strong></td><td>Alpha One (only if US month-end)</td></tr>
+        <tr><td><strong>Sat 09:00</strong></td><td>Optional power off</td></tr>
+      </table>
+      <pre id="c-sched"><button class="copy" type="button">Copy</button># medallion-vps (Admin once)
+cd C:\algo\medallion-vps\scripts
+.\install_home_wib_tasks.ps1 -Provider ibkr
+
+# Manual Friday download test (Gateway must be up for ibkr):
+.\run_friday_pipeline.ps1 -Provider ibkr
+# or EODHD:
+.\run_friday_pipeline.ps1 -Provider eodhd</pre>
+    </div>
+    <div class="card">
+      <h2>IBKR History — can we drop EODHD?</h2>
+      <p><strong>Yes, for paper/live ops</strong> — script <code>src.live.update_eod_ibkr</code> pulls 1-day bars for current NDX + QQQ and writes the same parquet layout the bot already reads.</p>
+      <table>
+        <tr><th>Pros</th><th>Cons (honest)</th></tr>
+        <tr>
+          <td>No monthly EODHD bill<br/>Uses Gateway you already run</td>
+          <td>Need IBKR market data / history entitlement<br/>First full pull can take 30–90+ min (pacing)<br/>Adjusted closes may differ slightly from EODHD research</td>
+        </tr>
+      </table>
+      <div class="callout ok">Dashboard/backtest = EODHD. Live with IBKR history = <strong>same logic</strong>, not bit-identical prices. Fine for paper automation.</div>
+      <pre id="c-ibkr"><button class="copy" type="button">Copy</button>cd C:\algo\medallion-vps
+# Gateway paper running on 4002
+py -3.13 -u -m src.live.update_eod_ibkr --duration "2 Y"</pre>
+    </div>
+    <div class="card">
+      <h2>Seed the VPS once</h2>
+      <ol>
+        <li>Clone <code>medallion-vps</code> (includes PIT membership under <code>data/raw/universe</code>).</li>
+        <li>Run IBKR history pull for 2Y (or copy slim parquets from research for current NDX + QQQ).</li>
+        <li>Confirm <code>QQQ.parquet</code> and ~100 member files exist under <code>data/raw/eodhd/eod</code>.</li>
+        <li>Weekly: Friday 22:00 job refreshes bars; Saturday job only reads disk + trades.</li>
+      </ol>
     </div>
   </section>
 
