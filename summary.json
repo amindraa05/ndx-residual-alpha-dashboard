@@ -1,33 +1,13 @@
 {
+  "brand": "Next Medallion Model",
   "initial_capital": 50000.0,
   "end": "2026-07-10",
-  "comparison": "alpha_one_vs_l3",
-  "evidence": {
-    "price_source": "Institutional-grade end-of-day vendor (EODHD)",
-    "price_field": "Split/dividend-adjusted close",
-    "securities_in_archive": 51607,
-    "benchmark": "Invesco QQQ Trust (QQQ)",
-    "benchmark_history": "2005-05-02 \u2192 2026-07-10",
-    "study_panel_history": "2005-05-02 \u2192 2026-07-10",
-    "study_panel_breadth": "199 listed names \u00d7 5331 sessions",
-    "universe": "NASDAQ-100 constituents",
-    "membership_method": "Point-in-time (PIT) interval membership (join / leave dates)",
-    "membership_policy": "No look-ahead: only names that were index members on each decision date",
-    "historical_member_universe": 274,
-    "priced_coverage": "199 of 274 historical members with complete EOD history in panel",
-    "rebalance_convention": "Alpha One: month-end \u00b7 L3: week-end",
-    "cost_model": "A1: 10 bps/side + IBKR commission \u00b7 L3 mid-honest: 7 bps/side + IBKR commission + 5.5% margin on max(lev-1,0)",
-    "implementation_notes": [
-      "Backtest assumes month-end close execution; live fills may differ by venue and timing.",
-      "Commission schedule is a transparent fixed approximation, not a client-specific IBKR invoice.",
-      "Index membership uses research-grade PIT intervals; commercial reconstitutions may differ slightly.",
-      "Past simulated performance is not indicative of future results."
-    ],
-    "comparison": "Alpha One (paper primary) vs L3 (paper secondary, frozen)"
-  },
+  "full_start": "2005-05-02",
+  "comparison": "next_medallion_a1_l3",
+  "windows_note": "Full & classic era start 2005-05; modern = 2018+",
   "alpha_one": {
     "label": "Alpha One",
-    "role": "Paper primary \u2014 residual 84/5 monthly top1 exit2 \u00b7 10 bps",
+    "role": "Primary \u00b7 monthly \u00b7 unlevered",
     "meta": {
       "strategy_id": "alpha_one",
       "lookback": 84,
@@ -56,19 +36,31 @@
       "ibkr_model": "fixed_approx_$0.005/sh_min$1_max1pct + SEC/TAF on sells"
     },
     "windows": {
-      "train": {
-        "cagr": 0.28869128635580754,
-        "max_dd": -0.5398351533958894,
-        "xq": 2.094175230193633,
-        "qqq_cagr": 0.1378544078802395,
-        "sharpe_approx": 0.7684938087626333,
-        "final_mult": 18.43717827395815,
-        "final_equity": 921858.9136979075,
-        "start": "2006-07-01",
-        "end": "2017-12-31",
-        "n_days": 2895
+      "full": {
+        "cagr": 0.4266305616937749,
+        "max_dd": -0.605988851191994,
+        "xq": 2.627433831092588,
+        "qqq_cagr": 0.16237537807616853,
+        "sharpe_approx": 0.935841080112066,
+        "final_mult": 1860.3198628064663,
+        "final_equity": 93015993.14032331,
+        "start": "2005-05-02",
+        "end": "2026-07-10",
+        "n_days": 5331
       },
-      "holdout": {
+      "classic": {
+        "cagr": 0.20491275460830805,
+        "max_dd": -0.5566726847705534,
+        "xq": 1.5277011581195605,
+        "qqq_cagr": 0.13413143893962487,
+        "sharpe_approx": 0.6323278501554611,
+        "final_mult": 10.589696410096476,
+        "final_equity": 529484.8205048238,
+        "start": "2005-05-02",
+        "end": "2017-12-31",
+        "n_days": 3190
+      },
+      "modern": {
         "cagr": 0.8217002768310542,
         "max_dd": -0.6059888511919939,
         "xq": 4.03910612794307,
@@ -81,40 +73,40 @@
         "n_days": 2141
       },
       "full20": {
-        "cagr": 0.49744850936962104,
+        "cagr": 0.4266305616937749,
+        "max_dd": -0.605988851191994,
+        "xq": 2.627433831092588,
+        "qqq_cagr": 0.16237537807616853,
+        "sharpe_approx": 0.935841080112066,
+        "final_mult": 1860.3198628064663,
+        "final_equity": 93015993.14032331,
+        "start": "2005-05-02",
+        "end": "2026-07-10",
+        "n_days": 5331
+      },
+      "train": {
+        "cagr": 0.20491275460830805,
+        "max_dd": -0.5566726847705534,
+        "xq": 1.5277011581195605,
+        "qqq_cagr": 0.13413143893962487,
+        "sharpe_approx": 0.6323278501554611,
+        "final_mult": 10.589696410096476,
+        "final_equity": 529484.8205048238,
+        "start": "2005-05-02",
+        "end": "2017-12-31",
+        "n_days": 3190
+      },
+      "holdout": {
+        "cagr": 0.8217002768310542,
         "max_dd": -0.6059888511919939,
-        "xq": 2.992385914904566,
-        "qqq_cagr": 0.16623808676946195,
-        "sharpe_approx": 1.018948487401833,
-        "final_mult": 3238.9076729760286,
-        "final_equity": 161945383.64880142,
-        "start": "2006-07-01",
+        "xq": 4.03910612794307,
+        "qqq_cagr": 0.20343616899452655,
+        "sharpe_approx": 1.2896824077731126,
+        "final_mult": 165.42462871704538,
+        "final_equity": 8271231.435852269,
+        "start": "2018-01-01",
         "end": "2026-07-10",
-        "n_days": 5036
-      },
-      "full15": {
-        "cagr": 0.5489353209082413,
-        "max_dd": -0.605988851191994,
-        "xq": 2.8362896879983577,
-        "qqq_cagr": 0.19353993466571429,
-        "sharpe_approx": 1.086547274942272,
-        "final_mult": 716.6578533622247,
-        "final_equity": 35832892.668111235,
-        "start": "2011-07-01",
-        "end": "2026-07-10",
-        "n_days": 3777
-      },
-      "full10": {
-        "cagr": 0.7054464814498629,
-        "max_dd": -0.605988851191994,
-        "xq": 3.2397205961249465,
-        "qqq_cagr": 0.21774917327551413,
-        "sharpe_approx": 1.2148337031586784,
-        "final_mult": 210.75419492918437,
-        "final_equity": 10537709.746459218,
-        "start": "2016-07-01",
-        "end": "2026-07-10",
-        "n_days": 2519
+        "n_days": 2141
       }
     },
     "trade_stats": {
@@ -303,8 +295,8 @@
     ]
   },
   "l3": {
-    "label": "L3 Risk Sleeve",
-    "role": "Paper secondary \u2014 resid_mom 126/21 weekly force + vol pin \u00b7 mid-honest fees",
+    "label": "L3 Sleeve",
+    "role": "Secondary \u00b7 weekly \u00b7 vol-target",
     "meta": {
       "strategy_id": "l3_base",
       "lookback": 126,
@@ -337,23 +329,34 @@
       "avg_lev": 0.8558995906369922,
       "p95_lev": 1.446962343961266,
       "max_lev": 4.986696532650223,
-      "cost_claim": "mid_honest_7bps_plus_margin_5p5",
-      "note": "Trade fees from base path; equity path includes vol overlay + margin interest"
+      "cost_claim": "mid_honest_7bps_plus_margin_5p5"
     },
     "windows": {
-      "train": {
-        "cagr": 0.4413037418036956,
-        "max_dd": -0.40033561405968976,
-        "xq": 3.2012305488778896,
-        "qqq_cagr": 0.1378544078802395,
-        "sharpe_approx": 1.055397720829516,
-        "final_mult": 66.71468998737714,
-        "final_equity": 3335734.499368857,
-        "start": "2006-07-01",
-        "end": "2017-12-31",
-        "n_days": 2895
+      "full": {
+        "cagr": 0.45286011120157066,
+        "max_dd": -0.4468482198438354,
+        "xq": 2.788970326456385,
+        "qqq_cagr": 0.16237537807616853,
+        "sharpe_approx": 1.0951961225017275,
+        "final_mult": 2736.7475818616776,
+        "final_equity": 136837379.0930839,
+        "start": "2005-05-02",
+        "end": "2026-07-10",
+        "n_days": 5331
       },
-      "holdout": {
+      "classic": {
+        "cagr": 0.4321406147518818,
+        "max_dd": -0.40033561405968976,
+        "xq": 3.221769766791189,
+        "qqq_cagr": 0.13413143893962487,
+        "sharpe_approx": 1.0511690585900821,
+        "final_mult": 94.3519135495391,
+        "final_equity": 4717595.677476956,
+        "start": "2005-05-02",
+        "end": "2017-12-31",
+        "n_days": 3190
+      },
+      "modern": {
         "cagr": 0.48336625147166856,
         "max_dd": -0.4468482198438354,
         "xq": 2.3760094080648635,
@@ -366,40 +369,40 @@
         "n_days": 2141
       },
       "full20": {
-        "cagr": 0.4594121312868069,
-        "max_dd": -0.44684821984383527,
-        "xq": 2.7635792748500356,
-        "qqq_cagr": 0.16623808676946195,
-        "sharpe_approx": 1.0996882561226526,
-        "final_mult": 1935.1093118184856,
-        "final_equity": 96755465.59092428,
-        "start": "2006-07-01",
-        "end": "2026-07-10",
-        "n_days": 5036
-      },
-      "full15": {
-        "cagr": 0.4518116972688526,
+        "cagr": 0.45286011120157066,
         "max_dd": -0.4468482198438354,
-        "xq": 2.3344623839479435,
-        "qqq_cagr": 0.19353993466571429,
-        "sharpe_approx": 1.1065498745544269,
-        "final_mult": 270.86616910102384,
-        "final_equity": 13543308.455051193,
-        "start": "2011-07-01",
+        "xq": 2.788970326456385,
+        "qqq_cagr": 0.16237537807616853,
+        "sharpe_approx": 1.0951961225017275,
+        "final_mult": 2736.7475818616776,
+        "final_equity": 136837379.0930839,
+        "start": "2005-05-02",
         "end": "2026-07-10",
-        "n_days": 3777
+        "n_days": 5331
       },
-      "full10": {
-        "cagr": 0.48899240330476057,
+      "train": {
+        "cagr": 0.4321406147518818,
+        "max_dd": -0.40033561405968976,
+        "xq": 3.221769766791189,
+        "qqq_cagr": 0.13413143893962487,
+        "sharpe_approx": 1.0511690585900821,
+        "final_mult": 94.3519135495391,
+        "final_equity": 4717595.677476956,
+        "start": "2005-05-02",
+        "end": "2017-12-31",
+        "n_days": 3190
+      },
+      "holdout": {
+        "cagr": 0.48336625147166856,
         "max_dd": -0.4468482198438354,
-        "xq": 2.2456682427264476,
-        "qqq_cagr": 0.21774917327551413,
-        "sharpe_approx": 1.1768973631130162,
-        "final_mult": 54.06899879535831,
-        "final_equity": 2703449.9397679158,
-        "start": "2016-07-01",
+        "xq": 2.3760094080648635,
+        "qqq_cagr": 0.20343616899452655,
+        "sharpe_approx": 1.1601032506953595,
+        "final_mult": 28.747513339558452,
+        "final_equity": 1437375.6669779227,
+        "start": "2018-01-01",
         "end": "2026-07-10",
-        "n_days": 2519
+        "n_days": 2141
       }
     },
     "trade_stats": {
@@ -598,129 +601,5 @@
       "avg_borrow_frac": 0.08972056244107479
     },
     "frozen_vol_scale": 1.421550725959241
-  },
-  "top1": {
-    "train": {
-      "cagr": 0.28869128635580754,
-      "max_dd": -0.5398351533958894,
-      "xq": 2.094175230193633,
-      "qqq_cagr": 0.1378544078802395,
-      "sharpe_approx": 0.7684938087626333,
-      "final_mult": 18.43717827395815,
-      "final_equity": 921858.9136979075,
-      "start": "2006-07-01",
-      "end": "2017-12-31",
-      "n_days": 2895
-    },
-    "holdout": {
-      "cagr": 0.8217002768310542,
-      "max_dd": -0.6059888511919939,
-      "xq": 4.03910612794307,
-      "qqq_cagr": 0.20343616899452655,
-      "sharpe_approx": 1.2896824077731126,
-      "final_mult": 165.42462871704538,
-      "final_equity": 8271231.435852269,
-      "start": "2018-01-01",
-      "end": "2026-07-10",
-      "n_days": 2141
-    },
-    "full20": {
-      "cagr": 0.49744850936962104,
-      "max_dd": -0.6059888511919939,
-      "xq": 2.992385914904566,
-      "qqq_cagr": 0.16623808676946195,
-      "sharpe_approx": 1.018948487401833,
-      "final_mult": 3238.9076729760286,
-      "final_equity": 161945383.64880142,
-      "start": "2006-07-01",
-      "end": "2026-07-10",
-      "n_days": 5036
-    },
-    "full15": {
-      "cagr": 0.5489353209082413,
-      "max_dd": -0.605988851191994,
-      "xq": 2.8362896879983577,
-      "qqq_cagr": 0.19353993466571429,
-      "sharpe_approx": 1.086547274942272,
-      "final_mult": 716.6578533622247,
-      "final_equity": 35832892.668111235,
-      "start": "2011-07-01",
-      "end": "2026-07-10",
-      "n_days": 3777
-    },
-    "full10": {
-      "cagr": 0.7054464814498629,
-      "max_dd": -0.605988851191994,
-      "xq": 3.2397205961249465,
-      "qqq_cagr": 0.21774917327551413,
-      "sharpe_approx": 1.2148337031586784,
-      "final_mult": 210.75419492918437,
-      "final_equity": 10537709.746459218,
-      "start": "2016-07-01",
-      "end": "2026-07-10",
-      "n_days": 2519
-    }
-  },
-  "top2": {
-    "train": {
-      "cagr": 0.4413037418036956,
-      "max_dd": -0.40033561405968976,
-      "xq": 3.2012305488778896,
-      "qqq_cagr": 0.1378544078802395,
-      "sharpe_approx": 1.055397720829516,
-      "final_mult": 66.71468998737714,
-      "final_equity": 3335734.499368857,
-      "start": "2006-07-01",
-      "end": "2017-12-31",
-      "n_days": 2895
-    },
-    "holdout": {
-      "cagr": 0.48336625147166856,
-      "max_dd": -0.4468482198438354,
-      "xq": 2.3760094080648635,
-      "qqq_cagr": 0.20343616899452655,
-      "sharpe_approx": 1.1601032506953595,
-      "final_mult": 28.747513339558452,
-      "final_equity": 1437375.6669779227,
-      "start": "2018-01-01",
-      "end": "2026-07-10",
-      "n_days": 2141
-    },
-    "full20": {
-      "cagr": 0.4594121312868069,
-      "max_dd": -0.44684821984383527,
-      "xq": 2.7635792748500356,
-      "qqq_cagr": 0.16623808676946195,
-      "sharpe_approx": 1.0996882561226526,
-      "final_mult": 1935.1093118184856,
-      "final_equity": 96755465.59092428,
-      "start": "2006-07-01",
-      "end": "2026-07-10",
-      "n_days": 5036
-    },
-    "full15": {
-      "cagr": 0.4518116972688526,
-      "max_dd": -0.4468482198438354,
-      "xq": 2.3344623839479435,
-      "qqq_cagr": 0.19353993466571429,
-      "sharpe_approx": 1.1065498745544269,
-      "final_mult": 270.86616910102384,
-      "final_equity": 13543308.455051193,
-      "start": "2011-07-01",
-      "end": "2026-07-10",
-      "n_days": 3777
-    },
-    "full10": {
-      "cagr": 0.48899240330476057,
-      "max_dd": -0.4468482198438354,
-      "xq": 2.2456682427264476,
-      "qqq_cagr": 0.21774917327551413,
-      "sharpe_approx": 1.1768973631130162,
-      "final_mult": 54.06899879535831,
-      "final_equity": 2703449.9397679158,
-      "start": "2016-07-01",
-      "end": "2026-07-10",
-      "n_days": 2519
-    }
   }
 }
