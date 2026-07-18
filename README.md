@@ -1,9 +1,7 @@
 ﻿# Next Medallion Model
 
-Public research brief: **Alpha One** vs **L3** NDX residual paper sleeves.
+**L3 Flagship** leads full path since 2005. Alpha One is the aggressive monthly alternate.
 
-**Live:** https://amindraa05.github.io/ndx-residual-alpha-dashboard/
+Live: https://amindraa05.github.io/ndx-residual-alpha-dashboard/
 
-Simulated from **2005** · start capital **$50,000**.
-
-Hypothetical only. Not investment advice.
+Sim start $50,000 · research only · not investment advice.
