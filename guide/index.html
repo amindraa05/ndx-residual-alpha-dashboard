@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Next Medallion · Strategy School &amp; Implementation</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#05070f;--panel:#0c1220;--line:rgba(148,163,184,.16);--text:#eef2ff;--mute:#94a3b8;
+  --gold:#f0c14b;--violet:#9b7bff;--hot:#ff4d9a;--mint:#34d399;--blue:#60a5fa;
+  --ok:rgba(52,211,153,.12);--warn:rgba(240,193,75,.12);--bad:rgba(248,113,113,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Outfit,system-ui,sans-serif;color:var(--text);
+  background:radial-gradient(900px 500px at 80% -10%,rgba(155,123,255,.25),transparent 50%),
+  radial-gradient(700px 400px at 0% 0%,rgba(240,193,75,.1),transparent 45%),
+  linear-gradient(180deg,#0b1020,var(--bg));min-height:100vh}
+.shell{max-width:1100px;margin:0 auto;padding:28px 18px 80px}
+.hero{margin-bottom:22px}
+.hero h1{margin:0;font-family:Syne,sans-serif;font-size:clamp(1.8rem,4.5vw,2.6rem);letter-spacing:-.04em;
+  background:linear-gradient(100deg,#fff,#c4b5fd 40%,#9b7bff 70%,#f0c14b);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--mute);max-width:40rem;line-height:1.55;margin:10px 0 0}
+.badge{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 10px;border-radius:999px;border:1px solid var(--line);color:#c4b5fd;margin-bottom:12px}
+.nav{display:flex;flex-wrap:wrap;gap:6px;padding:6px;background:rgba(8,12,24,.8);border:1px solid var(--line);
+  border-radius:16px;position:sticky;top:8px;z-index:30;backdrop-filter:blur(12px);margin-bottom:20px}
+.nav button{border:0;background:transparent;color:var(--mute);font:600 .8rem Outfit,sans-serif;
+  padding:10px 12px;border-radius:11px;cursor:pointer}
+.nav button:hover{color:#fff;background:rgba(255,255,255,.04)}
+.nav button.on{color:#0b0614;background:linear-gradient(100deg,#c4b5fd,#9b7bff 55%,#f0c14b)}
+.tab{display:none;animation:up .2s ease}
+.tab.on{display:block}
+@keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{background:rgba(12,18,32,.78);border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;margin-bottom:14px}
+.card h2{margin:0 0 8px;font-family:Syne,sans-serif;font-size:1.2rem}
+.card h3{margin:16px 0 8px;font-size:1rem;font-family:Syne,sans-serif}
+.card p,.card li{color:#cbd5e1;line-height:1.55;font-size:.92rem}
+.mute{color:var(--mute);font-size:.85rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:800px){.grid2,.grid3{grid-template-columns:1fr}}
+.pill{display:inline-block;padding:3px 9px;border-radius:999px;font-size:.72rem;font-weight:700;margin:2px}
+.p-gold{background:rgba(240,193,75,.15);color:var(--gold)}
+.p-vio{background:rgba(155,123,255,.18);color:#c4b5fd}
+.p-hot{background:rgba(255,77,154,.15);color:#f9a8d4}
+.p-mint{background:var(--ok);color:var(--mint)}
+.p-blue{background:rgba(96,165,250,.15);color:var(--blue)}
+table{width:100%;border-collapse:collapse;font-size:.86rem}
+th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}
+th{color:var(--mute);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase}
+code,pre{font-family:IBM Plex Mono,monospace}
+code{font-size:.8rem;background:rgba(0,0,0,.35);padding:2px 6px;border-radius:6px;color:#e2e8f0}
+pre{background:#070b14;border:1px solid var(--line);border-radius:12px;padding:14px;overflow:auto;font-size:.78rem;line-height:1.45;color:#dbe4ff;position:relative}
+.copy{position:absolute;top:8px;right:8px;border:1px solid var(--line);background:rgba(155,123,255,.2);color:#fff;
+  border-radius:8px;padding:4px 8px;font:600 .68rem Outfit,sans-serif;cursor:pointer}
+.step{display:grid;grid-template-columns:40px 1fr;gap:12px;margin:12px 0;padding:12px;border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.2)}
+.step .n{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-family:Syne,sans-serif;background:linear-gradient(135deg,#9b7bff,#f0c14b);color:#0b0614}
+.step h4{margin:0 0 4px;font-size:.95rem}
+.step p{margin:0;font-size:.86rem;color:var(--mute)}
+.callout{padding:12px 14px;border-radius:12px;margin:12px 0;font-size:.86rem;line-height:1.5}
+.callout.ok{background:var(--ok);border:1px solid rgba(52,211,153,.3)}
+.callout.warn{background:var(--warn);border:1px solid rgba(240,193,75,.35)}
+.callout.bad{background:var(--bad);border:1px solid rgba(248,113,133,.35)}
+.acc{border:1px solid var(--line);border-radius:12px;margin:8px 0;overflow:hidden}
+.acc summary{cursor:pointer;padding:12px 14px;font-weight:600;background:rgba(0,0,0,.25);list-style:none}
+.acc summary::-webkit-details-marker{display:none}
+.acc[open] summary{border-bottom:1px solid var(--line);color:#c4b5fd}
+.acc .body{padding:12px 14px}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line);font-size:.88rem;cursor:pointer}
+.checklist input{margin-top:3px;accent-color:#9b7bff}
+.price{font-family:IBM Plex Mono,monospace;color:var(--mint);font-weight:600}
+.toc a{color:#c4b5fd;text-decoration:none;font-size:.9rem}
+.toc a:hover{text-decoration:underline}
+.footer{margin-top:28px;text-align:center;color:var(--mute);font-size:.75rem}
+.subnav{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 14px}
+.subnav button{border:1px solid var(--line);background:rgba(0,0,0,.25);color:var(--mute);border-radius:999px;padding:6px 12px;cursor:pointer;font:600 .75rem Outfit,sans-serif}
+.subnav button.on{color:#fff;border-color:rgba(155,123,255,.5);background:rgba(155,123,255,.2)}
+.formula{background:rgba(155,123,255,.08);border-left:3px solid #9b7bff;padding:10px 12px;margin:10px 0;border-radius:0 10px 10px 0;font-family:IBM Plex Mono,monospace;font-size:.8rem;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="hero">
+    <div class="badge">Private guide · deployed for you</div>
+    <h1>Strategy School &amp; Implementation</h1>
+    <p>Deep dive on the three Next Medallion sleeves, how to approximate them on TradingView, and a full paper → live path on IBKR + VPS. Written so you can leave the bot running without guessing.</p>
+    <p class="mute" style="margin-top:8px">Performance dashboard (separate): <a class="toc" href="./index.html" style="color:#c4b5fd">stats site</a> · This page = teach + implement</p>
+  </header>
+
+  <nav class="nav" id="nav">
+    <button class="on" data-t="map">Map</button>
+    <button data-t="strats">3 Strategies</button>
+    <button data-t="math">Math engine</button>
+    <button data-t="tv">TradingView</button>
+    <button data-t="paper">Paper trade</button>
+    <button data-t="live">Live trade</button>
+    <button data-t="vps">VPS &amp; money</button>
+    <button data-t="ops">Day-2 ops</button>
+  </nav>
+
+  <!-- MAP -->
+  <section class="tab on" id="map">
+    <div class="card">
+      <h2>How to use this guide</h2>
+      <div class="grid2">
+        <div>
+          <h3>If you want to understand</h3>
+          <ol>
+            <li><strong>3 Strategies</strong> — what each sleeve does</li>
+            <li><strong>Math engine</strong> — residual, exit rules, vol gear</li>
+            <li><strong>TradingView</strong> — manual / Pine approximation</li>
+          </ol>
+        </div>
+        <div>
+          <h3>If you want to run money (paper first)</h3>
+          <ol>
+            <li><strong>VPS &amp; money</strong> — pick host + budget</li>
+            <li><strong>Paper trade</strong> — full install path</li>
+            <li><strong>Live trade</strong> — only after paper is boring</li>
+            <li><strong>Day-2 ops</strong> — kill switch, checks, failures</li>
+          </ol>
+        </div>
+      </div>
+      <div class="callout ok"><strong>Honesty first:</strong> all three strategies are long-only US equities, PIT NASDAQ-100 research, fee-aware backtests. Past sim ≠ future. Paper ≠ live fills.</div>
+    </div>
+    <div class="card">
+      <h2>30-second comparison</h2>
+      <div class="wrap" style="overflow:auto">
+        <table>
+          <thead>
+            <tr><th></th><th>Alpha One</th><th>L3 Sleeve</th><th>Flagship Extreme</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Family</td><td><span class="pill p-gold">Unlever 1×</span></td><td><span class="pill p-vio">Lever balanced</span></td><td><span class="pill p-hot">Lever high thrust</span></td></tr>
+            <tr><td>Cadence</td><td>Monthly</td><td>Weekly</td><td>Weekly (same base)</td></tr>
+            <tr><td>Signal</td><td>Residual 84/5</td><td>Resid-mom 126/21</td><td>Same as L3</td></tr>
+            <tr><td>Exit</td><td>Outside top 2</td><td>Force #1</td><td>Force #1</td></tr>
+            <tr><td>Gear</td><td>Always ~100% stock</td><td>Vol target, classic pin −42%</td><td>Hotter pin −48%</td></tr>
+            <tr><td>Full sim (from 2005)*</td><td>~42.7% / −60.6%</td><td>~47.8% / −47.0%</td><td>~55.3% / −54.0%</td></tr>
+            <tr><td>Paper role</td><td>Simple primary unlever</td><td>Recommended lev sleeve</td><td>Optional aggressive lev</td></tr>
+            <tr><td>IBKR automation</td><td><code>run_paper_rebalance</code></td><td><code>run_paper_l3_rebalance</code></td><td>Same L3 bot + extreme scale config</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mute">*Mid-honest research path, start $50k. Not a promise.</p>
+    </div>
+  </section>
+
+  <!-- STRATEGIES -->
+  <section class="tab" id="strats">
+    <div class="card">
+      <h2>What “residual leadership” means</h2>
+      <p>NASDAQ-100 names often rise and fall <em>together</em> with the market (QQQ). We care about names that are <strong>stronger than QQQ</strong> over a multi-month window — the temporary “captain” of the index basket.</p>
+      <div class="formula">residual_return(day) ≈ stock_return(day) − QQQ_return(day)<br/>
+score = cumulative residual over lookback, after a short skip (avoid last few noisy days)</div>
+      <p>Only names that were real index members <strong>on that decision date</strong> (point-in-time). No time-travel membership.</p>
+    </div>
+
+    <div class="card">
+      <span class="pill p-gold">Unlever</span>
+      <h2>1) Alpha One</h2>
+      <p><strong>Story:</strong> Once a month, go all-in on the single best residual name. Keep it while it stays roughly in the top of the ranking (hysteresis), so you don’t churn every tiny rank flip.</p>
+      <table>
+        <tr><th>Knob</th><th>Value</th><th>Plain English</th></tr>
+        <tr><td>Lookback / skip</td><td>84 / 5</td><td>~4 months of residual strength, ignore last ~1 week</td></tr>
+        <tr><td>Portfolio</td><td>Top 1</td><td>One stock, nearly full account</td></tr>
+        <tr><td>Exit rank</td><td>2</td><td>Sell only if it falls outside top 2 (or leaves NDX)</td></tr>
+        <tr><td>Rebalance</td><td>Month-end</td><td>Check once per month near US close</td></tr>
+        <tr><td>Leverage</td><td>1×</td><td>No borrow sizing; cash long only</td></tr>
+        <tr><td>Research costs</td><td>10 bps/side + IBKR-like commission</td><td>Slightly strict fills for liquid NDX</td></tr>
+      </table>
+      <div class="callout warn"><strong>Personality:</strong> Can lag for years then explode (modern era). Deep drawdowns (~−60% in sim) are part of the product.</div>
+      <details class="acc"><summary>When you should prefer Alpha One</summary>
+        <div class="body">
+          <ul>
+            <li>You want simpler ops (monthly, no margin sizing).</li>
+            <li>You accept deep DD for occasional “god years”.</li>
+            <li>You want a clean unlever baseline next to levered sleeves.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <span class="pill p-vio">Lever · balanced</span>
+      <h2>2) L3 Sleeve (recommended lev flagship)</h2>
+      <p><strong>Story:</strong> Same “pick the leader” idea, but weekly, force the #1 residual-momentum name, then scale position size with a vol-target so risk doesn’t run away — without going full degen.</p>
+      <table>
+        <tr><th>Knob</th><th>Value</th><th>Plain English</th></tr>
+        <tr><td>Score</td><td>resid_mom 126 / 21</td><td>Residual leader <em>and</em> absolute momentum &gt; 0</td></tr>
+        <tr><td>Exit</td><td>Force top 1</td><td>If not #1 at week-end → rotate</td></tr>
+        <tr><td>Rebalance</td><td>Weekly</td><td>More trades than Alpha One (~3–4×)</td></tr>
+        <tr><td>Vol target</td><td>lb 42, tgt 30%, scale frozen ~1.26</td><td>Gear up/down from recent vol</td></tr>
+        <tr><td>Pin</td><td>Classic era (≤2017) DD ≈ −42%</td><td>Scale chosen on old era only; 2018+ free</td></tr>
+        <tr><td>Research costs</td><td>7 bps + IBKR + 5.5% margin on max(lev−1,0)</td><td>Mid-honest</td></tr>
+      </table>
+      <div class="callout ok"><strong>Live meaning of “dynamic lev”:</strong> on rebalance day the bot sets <code>target_weight ≈ lev</code> (e.g. 0.9 or 1.3). IBKR buys that much stock (margin if &gt;1). Between weekly rebalances, share count is fixed.</div>
+    </div>
+
+    <div class="card">
+      <span class="pill p-hot">Lever · extreme</span>
+      <h2>3) Flagship Extreme</h2>
+      <p><strong>Story:</strong> <em>Identical</em> weekly signal and trade tape as L3 Sleeve. Only the vol-target is hotter (classic pin ≈ −48%, higher average gear). Higher full CAGR in sim, deeper drawdowns. Not a different stock-picking brain.</p>
+      <table>
+        <tr><th>Same as L3</th><th>Different</th></tr>
+        <tr><td>Tickers, weekly force #1, resid_mom 126/21</td><td>Frozen scale ~1.51 · pin −48% · more thrust</td></tr>
+      </table>
+      <div class="callout bad"><strong>Not “more honest magic”.</strong> It’s a conscious risk budget. Only run if you can stomach ~−54% full-path DD in sim and understand margin.</div>
+    </div>
+
+    <div class="card">
+      <h2>What is NOT cheating (and what would be)</h2>
+      <div class="grid2">
+        <div>
+          <h3 class="mute" style="color:var(--mint)">OK (our stack)</h3>
+          <ul>
+            <li>PIT membership</li>
+            <li>Past-only scores</li>
+            <li>Fees &amp; margin modeled</li>
+            <li>Vol scale pinned on classic only</li>
+            <li>Modern era not used to re-fit scale</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="mute" style="color:#fda4af">Cheating</h3>
+          <ul>
+            <li>Today’s NDX list for 2008 decisions</li>
+            <li>Using future prices in score</li>
+            <li>Zero fees on weekly churn</li>
+            <li>Re-pinning scale on full sample including 2018+</li>
+            <li>Picking params only on holdout after peeking</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATH -->
+  <section class="tab" id="math">
+    <div class="card">
+      <h2>Engine math (implementation-level)</h2>
+      <h3>1) Daily residual</h3>
+      <div class="formula">r_stock(t) = P(t)/P(t-1) − 1<br/>
+r_qqq(t) = Q(t)/Q(t-1) − 1<br/>
+resid(t) = r_stock(t) − r_qqq(t)</div>
+      <h3>2) Residual strength score</h3>
+      <div class="formula">cum(t) = product(1 + resid) from start<br/>
+score(t) = cum(t − skip) / cum(t − lookback) − 1</div>
+      <p class="mute">Alpha One: lookback=84, skip=5. L3: lookback=126, skip=21, and require price momentum &gt; 0 over same window.</p>
+      <h3>3) Momentum filter (L3 only)</h3>
+      <div class="formula">mom(t) = P(t − skip)/P(t − lookback) − 1<br/>
+if mom ≤ 0: score = −∞ (cannot be picked)</div>
+      <h3>4) Ranking &amp; exit</h3>
+      <ul>
+        <li>Universe = NDX members on date t with price ≥ $5 and valid score.</li>
+        <li>Alpha One: hold if rank ≤ 2; else sell. Fill empty slot with best rank.</li>
+        <li>L3: every week, target = rank #1 only (force rotate).</li>
+      </ul>
+      <h3>5) Vol gear (L3 / Extreme)</h3>
+      <div class="formula">vol(t) ≈ stdev(daily strategy returns, vol_lb) × √252<br/>
+lev(t) = clip( scale × vol_tgt / vol(t−1) , 0, 6 )</div>
+      <p><code>scale</code> is frozen (classic-era pin). Live bot uses lev at rebalance as <code>target_weight</code>.</p>
+      <h3>6) Costs (research)</h3>
+      <ul>
+        <li>Unlever: ~10 bps adverse slip per side + IBKR-like commission + SEC/TAF on sells.</li>
+        <li>Lever: ~7 bps + same commissions + 5.5% APR on borrowed fraction max(lev−1,0).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Backtest vs live leverage (so you’re not confused)</h2>
+      <table>
+        <tr><th></th><th>Research path</th><th>IBKR automation</th></tr>
+        <tr><td>When lev updates</td><td>Daily on equity series</td><td>On rebalance only (week/month)</td></tr>
+        <tr><td>How</td><td>Multiply daily return by lev</td><td>Order shares ≈ lev × equity / price</td></tr>
+        <tr><td>Between rebalances</td><td>Lev can change daily</td><td>Share count fixed; effective exposure drifts</td></tr>
+      </table>
+      <p class="mute">For weekly/monthly systems this gap is acceptable. It is not HFT-perfect replication.</p>
+    </div>
+  </section>
+
+  <!-- TRADINGVIEW -->
+  <section class="tab" id="tv">
+    <div class="card">
+      <h2>TradingView: what you can and cannot do</h2>
+      <div class="callout warn">
+        <strong>Hard limit:</strong> TradingView cannot run true point-in-time NASDAQ-100 membership for 2005–2026 across all historical constituents (including delisted) the way our Python PIT panel does.
+        Any TV script is an <strong>approximation on a fixed watchlist</strong> (usually today’s NDX names).
+      </div>
+      <table>
+        <tr><th>Feature</th><th>Our Python bot</th><th>TradingView</th></tr>
+        <tr><td>PIT full history + delisted</td><td>Yes</td><td>No (practically)</td></tr>
+        <tr><td>Residual vs QQQ</td><td>Yes</td><td>Yes (approx)</td></tr>
+        <tr><td>Monthly / weekly signal</td><td>Yes + broker orders</td><td>Alerts / labels only</td></tr>
+        <tr><td>Vol target sizing to IBKR</td><td>Yes</td><td>Manual / alert only</td></tr>
+        <tr><td>Auto-trade IBKR</td><td>Yes (our bot)</td><td>Not natively (need bridge; out of scope)</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Manual checklist (no Pine)</h2>
+      <div class="step"><div class="n">1</div><div><h4>Universe</h4><p>Use a current NDX list (TradingView “NASDAQ 100” components). Know this is not PIT-perfect.</p></div></div>
+      <div class="step"><div class="n">2</div><div><h4>Each rebalance day</h4><p>Alpha One: last trading day of month. L3: last trading day of week (usually Friday).</p></div></div>
+      <div class="step"><div class="n">3</div><div><h4>Compute score per name</h4><p>For each ticker, residual strength vs QQQ over lookback with skip (formulas above). Spreadsheet is fine.</p></div></div>
+      <div class="step"><div class="n">4</div><div><h4>Pick / hold</h4><p>Alpha One: buy #1; hold while rank ≤ 2. L3: always hold current #1 with mom&gt;0.</p></div></div>
+      <div class="step"><div class="n">5</div><div><h4>Size</h4><p>Alpha One: ~100% equity. L3: weight = lev from vol formula (or start 100% if you skip gear).</p></div></div>
+    </div>
+
+    <div class="card">
+      <h2>Pine Script v5 — educational approximation</h2>
+      <p>This script plots residual strength of <strong>the chart symbol vs QQQ</strong> and marks rough monthly/weekly decision points. It does <strong>not</strong> scan all NDX or enforce PIT. Use on each candidate, or build a watchlist workflow.</p>
+      <pre id="pine1"><button class="copy" type="button">Copy</button>//@version=5
+// EDUCATIONAL ONLY — not PIT NDX scanner, not broker automation
+indicator("Residual strength vs QQQ (approx)", overlay=false)
+
+lookback = input.int(84, "Lookback", minval=20)
+skip     = input.int(5, "Skip", minval=0)
+useMom   = input.bool(false, "Require price mom > 0 (L3-style)")
+
+qqq = request.security("QQQ", timeframe.period, close)
+rStock = ta.roc(close, 1) / 100.0
+rQqq   = ta.roc(qqq, 1) / 100.0
+resid  = rStock - rQqq
+
+// cumulative residual (log-sum style for stability)
+cum = ta.cum(math.log(1.0 + nz(resid)))
+// score ≈ growth of residual cum over [t-lookback, t-skip]
+score = math.exp(cum[skip] - cum[lookback]) - 1.0
+mom   = close[skip] / close[lookback] - 1.0
+valid = not useMom or mom > 0
+plot(valid ? score : na, "Residual score", color=color.new(color.aqua, 0))
+hline(0, "Zero")
+
+// decision markers (approx)
+isMonthEnd = ta.change(time("M")) != 0
+isWeekEnd  = ta.change(time("W")) != 0
+plotshape(isMonthEnd, title="Month boundary", style=shape.triangledown, location=location.top, size=size.tiny, color=color.yellow)
+plotshape(isWeekEnd, title="Week boundary", style=shape.circle, location=location.bottom, size=size.tiny, color=color.purple)
+
+// Optional: simple vol-target gear on THIS symbol returns (not portfolio)
+volLb  = input.int(42, "Vol LB")
+volTgt = input.float(0.25, "Vol target ann.")
+scale  = input.float(1.26, "Frozen scale (L3-like)")
+ret    = ta.roc(close, 1) / 100.0
+vol    = ta.stdev(ret, volLb) * math.sqrt(252)
+lev    = vol > 0 ? math.min(6.0, math.max(0.0, scale * volTgt / vol)) : 1.0
+plot(lev, "Approx lev", color=color.new(color.fuchsia, 0), display=display.pane)</pre>
+      <div class="callout ok">
+        <strong>How to use for “manual Next Medallion”:</strong> put NDX names in a watchlist → sort by residual score on rebalance day →
+        Alpha One: take #1 if rank rules ok → L3: take #1 with mom filter → size with lev plot if you want.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Is there “exact” Pine for our bot?</h2>
+      <p><strong>No single public Pine script equals our research engine.</strong> Closest DIY stack:</p>
+      <ul>
+        <li>Residual vs QQQ (script above)</li>
+        <li>External screener / spreadsheet for multi-name rank</li>
+        <li>IBKR bot for real membership + orders (this project)</li>
+      </ul>
+      <p class="mute">If you only use TradingView, treat signals as education, not a fill-identical clone of the dashboard.</p>
+    </div>
+  </section>
+
+  <!-- PAPER -->
+  <section class="tab" id="paper">
+    <div class="card">
+      <h2>Paper trade — full path (do this before live)</h2>
+      <div class="callout ok">Goal: 4–12 weeks boring paper. Measure fills, Gateway uptime, schedule correctness. No live deposit required for paper.</div>
+      <div class="subnav" id="paperSub">
+        <button class="on" data-p="p0">0. Mindset</button>
+        <button data-p="p1">1. IBKR account</button>
+        <button data-p="p2">2. VPS</button>
+        <button data-p="p3">3. Gateway</button>
+        <button data-p="p4">4. Bot install</button>
+        <button data-p="p5">5. First run</button>
+        <button data-p="p6">6. Schedule</button>
+      </div>
+      <div id="p0" class="psub">
+        <div class="step"><div class="n">!</div><div><h4>Rules of engagement</h4>
+          <p>DRY_RUN=1 until healthcheck + forced rebalance look correct. Never put IB password in git or chat. Kill file stops trading fast.</p></div></div>
+        <div class="checklist">
+          <label><input type="checkbox"/> I accept paper fills ≠ live fills</label>
+          <label><input type="checkbox"/> I will not enable live money until paper is boring</label>
+          <label><input type="checkbox"/> I use Python 3.11–3.13 (not 3.14)</label>
+        </div>
+      </div>
+      <div id="p1" class="psub" style="display:none">
+        <h3>IBKR paper account</h3>
+        <ol>
+          <li>Register at interactivebrokers.com → complete KYC for a real account (paper rides alongside).</li>
+          <li>Account Management → open / reset <strong>Paper Trading</strong> account. Note paper account id (often starts with <code>DU</code>…).</li>
+          <li>Market data: enable US equity data as required (paper may use delayed; confirm quotes work in Gateway).</li>
+          <li>Permissions: US Stocks long. API: allow socket clients.</li>
+          <li>Install <strong>IB Key</strong> 2FA on your phone.</li>
+        </ol>
+        <div class="callout warn">Paper does not need deposited cash. Live does. Don’t confuse account numbers.</div>
+      </div>
+      <div id="p2" class="psub" style="display:none">
+        <h3>Provision a VPS (Windows recommended first)</h3>
+        <ol>
+          <li>Pick provider (see <strong>VPS &amp; money</strong> tab for SKUs/prices).</li>
+          <li>Create Windows Server 2022 (or Win 10/11 cloud) · 2 vCPU · 4–8 GB RAM · 80 GB SSD.</li>
+          <li>Region: Singapore OK for weekly/monthly; US East nicer for market hours comfort.</li>
+          <li>Set admin password, enable RDP, restrict RDP to your IP in firewall.</li>
+          <li>RDP in → install Windows updates carefully (avoid surprise reboot on rebalance day).</li>
+          <li>Create folder <code>C:\algo\</code>.</li>
+        </ol>
+      </div>
+      <div id="p3" class="psub" style="display:none">
+        <h3>Install &amp; login IB Gateway (paper)</h3>
+        <ol>
+          <li>Download <strong>IB Gateway</strong> (not full TWS if you want lighter) from IBKR.</li>
+          <li>Login with paper credentials / select paper account.</li>
+          <li>Configure → Settings → API:
+            <ul>
+              <li>Enable ActiveX and Socket Clients = <strong>ON</strong></li>
+              <li>Read-Only API = <strong>OFF</strong></li>
+              <li>Socket port = <strong>4002</strong> (Gateway paper default)</li>
+              <li>Trusted IPs: <code>127.0.0.1</code></li>
+              <li>Download open orders on connect = ON</li>
+            </ul>
+          </li>
+          <li>Leave Gateway running. Approve 2FA on phone when prompted.</li>
+          <li>Optional later: IBC (IBController) for auto-restart login (advanced).</li>
+        </ol>
+        <pre id="c-ports"><button class="copy" type="button">Copy</button>Gateway paper API  → 127.0.0.1:4002
+TWS paper API       → often 7497
+Live Gateway        → often 4001
+Bot must use the same host/port as YOUR Gateway.</pre>
+      </div>
+      <div id="p4" class="psub" style="display:none">
+        <h3>Install the bot package</h3>
+        <ol>
+          <li>Install Python <strong>3.12 or 3.13</strong> from python.org · check “Add to PATH”.</li>
+          <li>Copy <code>live-paper</code> folder to <code>C:\algo\live-paper</code> (ZIP from your research machine).</li>
+          <li>Also copy research data or set DATA_ROOT:
+            <pre>data/raw/eodhd/eod/*.parquet
+data/raw/universe/ndx_constituents/pit_intervals.*</pre>
+          </li>
+          <li>Open PowerShell:</li>
+        </ol>
+        <pre id="c-install"><button class="copy" type="button">Copy</button>cd C:\algo\live-paper
+py -3.13 -m pip install -r requirements.txt
+copy .env.example .env
+notepad .env</pre>
+        <p><strong>Minimal .env</strong></p>
+        <pre id="c-env"><button class="copy" type="button">Copy</button>IB_HOST=127.0.0.1
+IB_PORT=4002
+IB_ACCOUNT=DUxxxxxxxx
+DRY_RUN=1
+IB_CLIENT_ID=71
+IB_CLIENT_ID_AUTO=1
+MAX_GROSS=0.97
+# optional:
+# DATA_ROOT=C:\algo\data
+# TELEGRAM_BOT_TOKEN=
+# TELEGRAM_CHAT_ID=
+# REQUIRE_REBALANCE_WINDOW=0</pre>
+        <p class="mute">Never put IB password in .env. Login only via Gateway UI.</p>
+      </div>
+      <div id="p5" class="psub" style="display:none">
+        <h3>First commands (still DRY_RUN=1)</h3>
+        <pre id="c-first"><button class="copy" type="button">Copy</button>cd C:\algo\live-paper
+py -3.13 -u -m src.live.healthcheck
+py -3.13 -u -m src.live.run_paper_rebalance --force
+# After L3 files are on the VPS:
+# py -3.13 -u -m src.live.run_paper_l3_rebalance --force</pre>
+        <ul>
+          <li>Healthcheck must connect to Gateway and see account.</li>
+          <li>Force rebalance with DRY_RUN logs intended orders without sending (or soft simulation — confirm logs).</li>
+          <li>When ready: set <code>DRY_RUN=0</code>, run force once during market hours, verify positions in Gateway.</li>
+        </ul>
+        <div class="callout warn">If signal errors “no EOD / missing PIT”, fix data paths before touching DRY_RUN=0.</div>
+      </div>
+      <div id="p6" class="psub" style="display:none">
+        <h3>Schedule automation (Windows Task Scheduler)</h3>
+        <p>Use scripts under <code>live-paper/scripts/</code> (e.g. <code>install_windows_tasks.ps1</code>, <code>run_rebalance.ps1</code>, <code>run_healthcheck.ps1</code>).</p>
+        <table>
+          <tr><th>Task</th><th>When (conceptual)</th><th>Command idea</th></tr>
+          <tr><td>Health</td><td>Every 15–30 min</td><td><code>run_healthcheck.ps1</code></td></tr>
+          <tr><td>Alpha One</td><td>Weekdays check; only trades month-end near 15:40–15:58 America/New_York</td><td><code>run_paper_rebalance</code></td></tr>
+          <tr><td>L3</td><td>Weekdays check; only week-end session</td><td><code>run_paper_l3_rebalance</code></td></tr>
+          <tr><td>Gateway</td><td>On boot + watchdog</td><td><code>start_ib_gateway.ps1</code></td></tr>
+        </table>
+        <div class="callout ok">Bot already knows “is today rebalance day?” — scheduler can call daily; bot exits 0 if not the day.</div>
+        <p><strong>Timezone tip:</strong> store “US equity logic” in ET inside code (already). Your VPS clock can be UTC or Singapore; don’t schedule “15:40 local SG” by mistake.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Paper checklist (interactive)</h2>
+      <div class="checklist" id="paperCheck">
+        <label><input type="checkbox"/> IBKR paper account id noted</label>
+        <label><input type="checkbox"/> Gateway paper on port 4002, Read-Only OFF</label>
+        <label><input type="checkbox"/> Python 3.12/3.13 installed</label>
+        <label><input type="checkbox"/> live-paper + requirements installed</label>
+        <label><input type="checkbox"/> .env with IB_ACCOUNT + DRY_RUN=1</label>
+        <label><input type="checkbox"/> EOD + PIT data visible to bot</label>
+        <label><input type="checkbox"/> healthcheck OK</label>
+        <label><input type="checkbox"/> force rebalance dry-run OK</label>
+        <label><input type="checkbox"/> one real paper order path tested (DRY_RUN=0)</label>
+        <label><input type="checkbox"/> Task Scheduler health + rebalance registered</label>
+        <label><input type="checkbox"/> Kill switch path known: state/KILL</label>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE -->
+  <section class="tab" id="live">
+    <div class="card">
+      <h2>Live trade — only after paper is boring</h2>
+      <div class="callout bad"><strong>Live uses real money.</strong> Same code paths, different Gateway mode/port/account, stricter risk. Do not skip paper.</div>
+      <h3>Paper vs Live differences</h3>
+      <table>
+        <tr><th></th><th>Paper</th><th>Live</th></tr>
+        <tr><td>Capital</td><td>Virtual</td><td>Your cash / margin</td></tr>
+        <tr><td>Gateway login</td><td>Paper</td><td>Live</td></tr>
+        <tr><td>Port (typical Gateway)</td><td>4002</td><td>4001</td></tr>
+        <tr><td>IB_ACCOUNT in .env</td><td>DU…</td><td>U… / real id</td></tr>
+        <tr><td>Fills / slip</td><td>Optimistic-ish</td><td>Real microstructure</td></tr>
+        <tr><td>Margin interest</td><td>Simulated in research</td><td>Real if lev&gt;1</td></tr>
+        <tr><td>Psychological DD</td><td>Easy to ignore</td><td>−40% hurts</td></tr>
+        <tr><td>Recommended first size</td><td>Full paper</td><td>Small fraction (e.g. 5–15% of intended)</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>Go-live sequence</h2>
+      <div class="step"><div class="n">1</div><div><h4>Freeze config</h4><p>Pick ONE sleeve to automate first (suggest Alpha One unlever OR L3 Sleeve — not Extreme first). Write the frozen params in a note.</p></div></div>
+      <div class="step"><div class="n">2</div><div><h4>Funding</h4><p>Deposit only what you can see draw down by the sim DD (~45–60%). Keep buffer for margin if levered.</p></div></div>
+      <div class="step"><div class="n">3</div><div><h4>Live Gateway</h4><p>Separate login mode, port 4001 (confirm on your install), Read-Only OFF, trusted 127.0.0.1 only.</p></div></div>
+      <div class="step"><div class="n">4</div><div><h4>New .env live</h4><p>Copy paper .env → <code>.env.live</code> with live account + port. Keep paper env intact for parallel paper if you want.</p></div></div>
+      <div class="step"><div class="n">5</div><div><h4>DRY_RUN=1 on live port</h4><p>Connect + healthcheck against live Gateway without orders. Confirm account equity reads correctly.</p></div></div>
+      <div class="step"><div class="n">6</div><div><h4>Micro live order</h4><p>DRY_RUN=0 with tiny MAX_GROSS (e.g. 0.1) once. Verify fill, commission, position.</p></div></div>
+      <div class="step"><div class="n">7</div><div><h4>Raise size slowly</h4><p>Only after 2–4 clean rebalance cycles. Extreme sleeve last, if ever.</p></div></div>
+      <div class="step"><div class="n">8</div><div><h4>Monitoring</h4><p>Telegram alerts optional; weekly human check of Gateway + logs; monthly reconcile vs broker statements.</p></div></div>
+    </div>
+    <div class="card">
+      <h2>Risk controls you must keep</h2>
+      <ul>
+        <li><code>state/KILL</code> file — create empty file to halt new orders (confirm your bot honors it — ours does).</li>
+        <li><code>MAX_GROSS</code> &lt; 1 for cash buffer (e.g. 0.95–0.97 unlever; lever uses target_weight separately).</li>
+        <li>Never open Gateway API to the public internet.</li>
+        <li>One strategy per account if possible (A1 vs L3).</li>
+        <li>Tax / local regulation = your responsibility.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- VPS -->
+  <section class="tab" id="vps">
+    <div class="card">
+      <h2>VPS recommendations (practical 2026 ballparks)</h2>
+      <p class="mute">Prices move — treat as planning ranges in USD/month. Check provider sites before buy.</p>
+      <table>
+        <tr><th>Provider</th><th>SKU idea</th><th>Region</th><th>Est. price</th><th>Fit</th></tr>
+        <tr><td><strong>Vultr / Linode</strong></td><td>2 vCPU · 4 GB · Win or Linux</td><td>SG or NJ</td><td class="price">~$24–48</td><td>Good default</td></tr>
+        <tr><td><strong>DigitalOcean</strong></td><td>4 GB droplet (+ Windows marketplace if any)</td><td>SGP1 / NYC</td><td class="price">~$24–40</td><td>Linux-friendly</td></tr>
+        <tr><td><strong>AWS Lightsail</strong></td><td>4 GB Windows</td><td>ap-southeast-1 or us-east-1</td><td class="price">~$40–70</td><td>Stable brand</td></tr>
+        <tr><td><strong>Azure</strong></td><td>B2s Windows</td><td>SE Asia / East US</td><td class="price">~$40–80</td><td>Enterprise-y</td></tr>
+        <tr><td><strong>Contabo</strong></td><td>4–8 GB VPS</td><td>EU (farther from US)</td><td class="price">~$10–20</td><td>Cheap; latency fine for weekly</td></tr>
+        <tr><td><strong>Local mini-PC</strong></td><td>Always-on home</td><td>Your city</td><td class="price">electricity only</td><td>OK if power/internet stable + UPS</td></tr>
+      </table>
+      <div class="callout ok"><strong>Singapore:</strong> fine for this bot (weekly/monthly). Prefer <strong>US East</strong> if you want maximum comfort around the US cash session and slightly simpler mental model.</div>
+    </div>
+    <div class="card">
+      <h2>Minimum build vs comfortable build</h2>
+      <div class="grid2">
+        <div>
+          <h3>Minimum</h3>
+          <ul>
+            <li>2 vCPU · 4 GB RAM · 60 GB SSD</li>
+            <li>Windows Server</li>
+            <li>Gateway + Python only</li>
+            <li>~<span class="price">$25–40/mo</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Comfortable</h3>
+          <ul>
+            <li>2–4 vCPU · 8 GB RAM · 100 GB SSD</li>
+            <li>Snapshots / backups</li>
+            <li>Telegram alerts</li>
+            <li>~<span class="price">$45–80/mo</span></li>
+          </ul>
+        </div>
+      </div>
+      <h3>What to install (checklist)</h3>
+      <div class="checklist">
+        <label><input type="checkbox"/> OS updates + RDP hardened</label>
+        <label><input type="checkbox"/> Python 3.12/3.13</label>
+        <label><input type="checkbox"/> IB Gateway stable</label>
+        <label><input type="checkbox"/> live-paper bot + dependencies</label>
+        <label><input type="checkbox"/> EOD + PIT data (or DATA_ROOT)</label>
+        <label><input type="checkbox"/> Task Scheduler tasks</label>
+        <label><input type="checkbox"/> Optional: Telegram bot</label>
+        <label><input type="checkbox"/> Optional: IBC auto-login later</label>
+      </div>
+    </div>
+  </section>
+
+  <!-- OPS -->
+  <section class="tab" id="ops">
+    <div class="card">
+      <h2>Day-2 operations</h2>
+      <h3>Daily (5 minutes)</h3>
+      <ul>
+        <li>Gateway still logged in?</li>
+        <li>Latest healthcheck log green?</li>
+        <li>No unexpected positions?</li>
+      </ul>
+      <h3>On rebalance day</h3>
+      <ul>
+        <li>Confirm US market is open (not holiday).</li>
+        <li>Watch first automated run; compare target ticker to your own residual spot-check occasionally.</li>
+        <li>Save rebalance JSON from <code>logs/</code>.</li>
+      </ul>
+      <h3>Kill switch</h3>
+      <pre id="c-kill"><button class="copy" type="button">Copy</button># Stop new trading immediately (from live-paper root)
+echo. > state\KILL
+# Remove when safe:
+del state\KILL</pre>
+      <h3>Common failures</h3>
+      <table>
+        <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+        <tr><td>Can’t connect API</td><td>Gateway down / wrong port / Read-Only</td><td>Restart Gateway, check 4002, Read-Only OFF</td></tr>
+        <tr><td>Client id hang</td><td>Stale session</td><td>IB_CLIENT_ID_AUTO=1 (built-in rotation)</td></tr>
+        <tr><td>No signal</td><td>Missing EOD/PIT</td><td>Fix DATA_ROOT / copy parquets</td></tr>
+        <tr><td>No fill</td><td>Market closed / symbol halt / size</td><td>Check hours, logs, reduce size</td></tr>
+        <tr><td>Python errors on 3.14</td><td>Unsupported</td><td>Use 3.13</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>Suggested rollout order</h2>
+      <ol>
+        <li>Paper Alpha One only (simplest)</li>
+        <li>Paper L3 Sleeve (weight = lev)</li>
+        <li>Optional paper Extreme on separate paper account</li>
+        <li>Live micro Alpha One or L3 — not both on day one</li>
+        <li>Scale capital only after multiple clean cycles</li>
+      </ol>
+      <div class="callout warn">This guide is implementation education, not investment advice. You are responsible for broker agreements, taxes, and risk.</div>
+    </div>
+  </section>
+
+  <footer class="footer">Next Medallion · Strategy School &amp; Implementation · research automation guide · not investment advice</footer>
+</div>
+<script>
+document.querySelectorAll('#nav button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.getElementById(b.dataset.t).classList.add('on');
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+});
+document.querySelectorAll('#paperSub button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('#paperSub button').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.psub').forEach(x=>x.style.display='none');
+    b.classList.add('on');
+    document.getElementById(b.dataset.p).style.display='block';
+  };
+});
+document.querySelectorAll('pre > button.copy').forEach(btn=>{
+  btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    const pre=btn.parentElement;
+    const text=[...pre.childNodes].filter(n=>n.nodeType===3 || (n.nodeType===1 && n.tagName!=='BUTTON')).map(n=>n.textContent).join('').trim();
+    navigator.clipboard.writeText(text).then(()=>{btn.textContent='Copied'; setTimeout(()=>btn.textContent='Copy',1200)});
+  });
+});
+</script>
+</body>
+</html>
