@@ -1,7 +1,11 @@
-﻿# Next Medallion Model
+# VECTOR
 
-**L3 Flagship** leads full path since 2005. Alpha One is the aggressive monthly alternate.
+**VECTOR** — *Vol-managed Equity Concentration via Residual*
 
-Live: https://amindraa05.github.io/ndx-residual-alpha-dashboard/
+Three NDX residual sleeves: **Unit** (unlever) · **Gear** (vol-pinned lever) · **Overdrive** (hot gear).
+
+Live: https://amindraa05.github.io/ndx-residual-alpha-dashboard/  
+Paper bot: https://github.com/amindraa05/vector  
+Guide: https://amindraa05.github.io/ndx-residual-alpha-dashboard/guide/
 
 Sim start $50,000 · research only · not investment advice.

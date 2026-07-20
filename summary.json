@@ -1,9 +1,9 @@
 {
-  "brand": "Next Medallion Model",
+  "brand": "VECTOR",
   "initial_capital": 50000.0,
   "sleeves": {
     "alpha_one": {
-      "label": "Alpha One",
+      "label": "VECTOR Unit",
       "role": "Unlevered \u00b7 monthly residual",
       "family": "unlever",
       "windows": {
@@ -242,7 +242,7 @@
       ]
     },
     "l3_sleeve": {
-      "label": "L3 Sleeve",
+      "label": "VECTOR Gear",
       "role": "Levered \u00b7 balanced vol pin",
       "family": "lev",
       "windows": {
@@ -488,7 +488,7 @@
       ]
     },
     "flagship_x": {
-      "label": "Flagship Extreme",
+      "label": "VECTOR Overdrive",
       "role": "Levered \u00b7 high thrust \u00b7 deeper DD",
       "family": "lev",
       "windows": {

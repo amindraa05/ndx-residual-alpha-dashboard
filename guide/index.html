@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="robots" content="noindex,nofollow"/>
-<title>Next Medallion · Strategy School &amp; Implementation</title>
+<title>VECTOR · Strategy School &amp; Implementation</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -86,9 +86,9 @@ pre{background:#070b14;border:1px solid var(--line);border-radius:12px;padding:1
   <header class="hero">
     <div class="badge">Private guide · deployed for you</div>
     <h1>Strategy School &amp; Implementation</h1>
-    <p>Deep dive on the three Next Medallion sleeves, how to approximate them on TradingView, and a full paper → live path on IBKR + VPS. Written so you can leave the bot running without guessing.</p>
+    <p>Deep dive on the three VECTOR sleeves, how to approximate them on TradingView, and a full paper → live path on IBKR + VPS. Written so you can leave the bot running without guessing.</p>
     <p class="mute" style="margin-top:8px">Performance dashboard: <a class="toc" href="../" style="color:#c4b5fd">stats site</a>
-    · VPS code repo: <strong>medallion-vps</strong> on GitHub · This page = teach + implement</p>
+    · VPS code repo: <strong>vector</strong> on GitHub · This page = teach + implement</p>
   </header>
 
   <nav class="nav" id="nav">
@@ -133,17 +133,17 @@ pre{background:#070b14;border:1px solid var(--line);border-radius:12px;padding:1
       <div class="wrap" style="overflow:auto">
         <table>
           <thead>
-            <tr><th></th><th>Alpha One</th><th>L3 Sleeve</th><th>Flagship Extreme</th></tr>
+            <tr><th></th><th>VECTOR Unit</th><th>VECTOR Gear</th><th>VECTOR Overdrive</th></tr>
           </thead>
           <tbody>
             <tr><td>Family</td><td><span class="pill p-gold">Unlever 1×</span></td><td><span class="pill p-vio">Lever balanced</span></td><td><span class="pill p-hot">Lever high thrust</span></td></tr>
             <tr><td>Cadence</td><td>Monthly</td><td>Weekly</td><td>Weekly (same base)</td></tr>
-            <tr><td>Signal</td><td>Residual 84/5</td><td>Resid-mom 126/21</td><td>Same as L3</td></tr>
+            <tr><td>Signal</td><td>Residual 84/5</td><td>Resid-mom 126/21</td><td>Same as Gear</td></tr>
             <tr><td>Exit</td><td>Outside top 2</td><td>Force #1</td><td>Force #1</td></tr>
             <tr><td>Gear</td><td>Always ~100% stock</td><td>Vol target, classic pin −42%</td><td>Hotter pin −48%</td></tr>
             <tr><td>Full sim (from 2005)*</td><td>~42.7% / −60.6%</td><td>~47.8% / −47.0%</td><td>~55.3% / −54.0%</td></tr>
             <tr><td>Paper role</td><td>Simple primary unlever</td><td>Recommended lev sleeve</td><td>Optional aggressive lev</td></tr>
-            <tr><td>IBKR automation</td><td><code>run_paper_rebalance</code></td><td><code>run_paper_l3_rebalance</code></td><td>Same L3 bot + extreme scale config</td></tr>
+            <tr><td>IBKR automation</td><td><code>run_paper_rebalance</code></td><td><code>run_paper_l3_rebalance</code></td><td>Same Gear bot + extreme scale config</td></tr>
           </tbody>
         </table>
       </div>
@@ -163,7 +163,7 @@ score = cumulative residual over lookback, after a short skip (avoid last few no
 
     <div class="card">
       <span class="pill p-gold">Unlever</span>
-      <h2>1) Alpha One</h2>
+      <h2>1) VECTOR Unit</h2>
       <p><strong>Story:</strong> Once a month, go all-in on the single best residual name. Keep it while it stays roughly in the top of the ranking (hysteresis), so you don’t churn every tiny rank flip.</p>
       <table>
         <tr><th>Knob</th><th>Value</th><th>Plain English</th></tr>
@@ -175,7 +175,7 @@ score = cumulative residual over lookback, after a short skip (avoid last few no
         <tr><td>Research costs</td><td>10 bps/side + IBKR-like commission</td><td>Slightly strict fills for liquid NDX</td></tr>
       </table>
       <div class="callout warn"><strong>Personality:</strong> Can lag for years then explode (modern era). Deep drawdowns (~−60% in sim) are part of the product.</div>
-      <details class="acc"><summary>When you should prefer Alpha One</summary>
+      <details class="acc"><summary>When you should prefer VECTOR Unit</summary>
         <div class="body">
           <ul>
             <li>You want simpler ops (monthly, no margin sizing).</li>
@@ -188,13 +188,13 @@ score = cumulative residual over lookback, after a short skip (avoid last few no
 
     <div class="card">
       <span class="pill p-vio">Lever · balanced</span>
-      <h2>2) L3 Sleeve (recommended lev flagship)</h2>
+      <h2>2) VECTOR Gear (recommended lev flagship)</h2>
       <p><strong>Story:</strong> Same “pick the leader” idea, but weekly, force the #1 residual-momentum name, then scale position size with a vol-target so risk doesn’t run away — without going full degen.</p>
       <table>
         <tr><th>Knob</th><th>Value</th><th>Plain English</th></tr>
         <tr><td>Score</td><td>resid_mom 126 / 21</td><td>Residual leader <em>and</em> absolute momentum &gt; 0</td></tr>
         <tr><td>Exit</td><td>Force top 1</td><td>If not #1 at week-end → rotate</td></tr>
-        <tr><td>Rebalance</td><td>Weekly</td><td>More trades than Alpha One (~3–4×)</td></tr>
+        <tr><td>Rebalance</td><td>Weekly</td><td>More trades than VECTOR Unit (~3–4×)</td></tr>
         <tr><td>Vol target</td><td>lb 42, tgt 30%, scale frozen ~1.26</td><td>Gear up/down from recent vol</td></tr>
         <tr><td>Pin</td><td>Classic era (≤2017) DD ≈ −42%</td><td>Scale chosen on old era only; 2018+ free</td></tr>
         <tr><td>Research costs</td><td>7 bps + IBKR + 5.5% margin on max(lev−1,0)</td><td>Mid-honest</td></tr>
@@ -204,10 +204,10 @@ score = cumulative residual over lookback, after a short skip (avoid last few no
 
     <div class="card">
       <span class="pill p-hot">Lever · extreme</span>
-      <h2>3) Flagship Extreme</h2>
-      <p><strong>Story:</strong> <em>Identical</em> weekly signal and trade tape as L3 Sleeve. Only the vol-target is hotter (classic pin ≈ −48%, higher average gear). Higher full CAGR in sim, deeper drawdowns. Not a different stock-picking brain.</p>
+      <h2>3) VECTOR Overdrive</h2>
+      <p><strong>Story:</strong> <em>Identical</em> weekly signal and trade tape as VECTOR Gear. Only the vol-target is hotter (classic pin ≈ −48%, higher average gear). Higher full CAGR in sim, deeper drawdowns. Not a different stock-picking brain.</p>
       <table>
-        <tr><th>Same as L3</th><th>Different</th></tr>
+        <tr><th>Same as Gear</th><th>Different</th></tr>
         <tr><td>Tickers, weekly force #1, resid_mom 126/21</td><td>Frozen scale ~1.51 · pin −48% · more thrust</td></tr>
       </table>
       <div class="callout bad"><strong>Not “more honest magic”.</strong> It’s a conscious risk budget. Only run if you can stomach ~−54% full-path DD in sim and understand margin.</div>
@@ -251,17 +251,17 @@ resid(t) = r_stock(t) − r_qqq(t)</div>
       <h3>2) Residual strength score</h3>
       <div class="formula">cum(t) = product(1 + resid) from start<br/>
 score(t) = cum(t − skip) / cum(t − lookback) − 1</div>
-      <p class="mute">Alpha One: lookback=84, skip=5. L3: lookback=126, skip=21, and require price momentum &gt; 0 over same window.</p>
-      <h3>3) Momentum filter (L3 only)</h3>
+      <p class="mute">VECTOR Unit: lookback=84, skip=5. Gear: lookback=126, skip=21, and require price momentum &gt; 0 over same window.</p>
+      <h3>3) Momentum filter (Gear only)</h3>
       <div class="formula">mom(t) = P(t − skip)/P(t − lookback) − 1<br/>
 if mom ≤ 0: score = −∞ (cannot be picked)</div>
       <h3>4) Ranking &amp; exit</h3>
       <ul>
         <li>Universe = NDX members on date t with price ≥ $5 and valid score.</li>
-        <li>Alpha One: hold if rank ≤ 2; else sell. Fill empty slot with best rank.</li>
-        <li>L3: every week, target = rank #1 only (force rotate).</li>
+        <li>VECTOR Unit: hold if rank ≤ 2; else sell. Fill empty slot with best rank.</li>
+        <li>Gear: every week, target = rank #1 only (force rotate).</li>
       </ul>
-      <h3>5) Vol gear (L3 / Extreme)</h3>
+      <h3>5) Vol gear (Gear / Extreme)</h3>
       <div class="formula">vol(t) ≈ stdev(daily strategy returns, vol_lb) × √252<br/>
 lev(t) = clip( scale × vol_tgt / vol(t−1) , 0, 6 )</div>
       <p><code>scale</code> is frozen (classic-era pin). Live bot uses lev at rebalance as <code>target_weight</code>.</p>
@@ -304,10 +304,10 @@ lev(t) = clip( scale × vol_tgt / vol(t−1) , 0, 6 )</div>
     <div class="card">
       <h2>Manual checklist (no Pine)</h2>
       <div class="step"><div class="n">1</div><div><h4>Universe</h4><p>Use a current NDX list (TradingView “NASDAQ 100” components). Know this is not PIT-perfect.</p></div></div>
-      <div class="step"><div class="n">2</div><div><h4>Each rebalance day</h4><p>Alpha One: last trading day of month. L3: last trading day of week (usually Friday).</p></div></div>
+      <div class="step"><div class="n">2</div><div><h4>Each rebalance day</h4><p>VECTOR Unit: last trading day of month. Gear: last trading day of week (usually Friday).</p></div></div>
       <div class="step"><div class="n">3</div><div><h4>Compute score per name</h4><p>For each ticker, residual strength vs QQQ over lookback with skip (formulas above). Spreadsheet is fine.</p></div></div>
-      <div class="step"><div class="n">4</div><div><h4>Pick / hold</h4><p>Alpha One: buy #1; hold while rank ≤ 2. L3: always hold current #1 with mom&gt;0.</p></div></div>
-      <div class="step"><div class="n">5</div><div><h4>Size</h4><p>Alpha One: ~100% equity. L3: weight = lev from vol formula (or start 100% if you skip gear).</p></div></div>
+      <div class="step"><div class="n">4</div><div><h4>Pick / hold</h4><p>VECTOR Unit: buy #1; hold while rank ≤ 2. Gear: always hold current #1 with mom&gt;0.</p></div></div>
+      <div class="step"><div class="n">5</div><div><h4>Size</h4><p>VECTOR Unit: ~100% equity. Gear: weight = lev from vol formula (or start 100% if you skip gear).</p></div></div>
     </div>
 
     <div class="card">
@@ -319,7 +319,7 @@ indicator("Residual strength vs QQQ (approx)", overlay=false)
 
 lookback = input.int(84, "Lookback", minval=20)
 skip     = input.int(5, "Skip", minval=0)
-useMom   = input.bool(false, "Require price mom > 0 (L3-style)")
+useMom   = input.bool(false, "Require price mom > 0 (Gear-style)")
 
 qqq = request.security("QQQ", timeframe.period, close)
 rStock = ta.roc(close, 1) / 100.0
@@ -344,14 +344,14 @@ plotshape(isWeekEnd, title="Week boundary", style=shape.circle, location=locatio
 // Optional: simple vol-target gear on THIS symbol returns (not portfolio)
 volLb  = input.int(42, "Vol LB")
 volTgt = input.float(0.25, "Vol target ann.")
-scale  = input.float(1.26, "Frozen scale (L3-like)")
+scale  = input.float(1.26, "Frozen scale (Gear-like)")
 ret    = ta.roc(close, 1) / 100.0
 vol    = ta.stdev(ret, volLb) * math.sqrt(252)
 lev    = vol > 0 ? math.min(6.0, math.max(0.0, scale * volTgt / vol)) : 1.0
 plot(lev, "Approx lev", color=color.new(color.fuchsia, 0), display=display.pane)</pre>
       <div class="callout ok">
-        <strong>How to use for “manual Next Medallion”:</strong> put NDX names in a watchlist → sort by residual score on rebalance day →
-        Alpha One: take #1 if rank rules ok → L3: take #1 with mom filter → size with lev plot if you want.
+        <strong>How to use for “manual VECTOR”:</strong> put NDX names in a watchlist → sort by residual score on rebalance day →
+        VECTOR Unit: take #1 if rank rules ok → Gear: take #1 with mom filter → size with lev plot if you want.
       </div>
     </div>
 
@@ -383,7 +383,7 @@ plot(lev, "Approx lev", color=color.new(color.fuchsia, 0), display=display.pane)
         </div>
       </div>
       <div class="callout ok">
-        <strong>Deploy package:</strong> GitHub repo <code>medallion-vps</code> — only what you copy to VPS/mini-PC.
+        <strong>Deploy package:</strong> GitHub repo <code>vector</code> — only what you copy to VPS/mini-PC.
         Research archive (50k files) can stay on the research PC.
       </div>
     </div>
@@ -393,7 +393,7 @@ plot(lev, "Approx lev", color=color.new(color.fuchsia, 0), display=display.pane)
         <tr><th></th><th>Historical archive (research)</th><th>Forward daily (ops)</th></tr>
         <tr><td>Purpose</td><td>Backtest / dashboard</td><td>New closes so ranking isn’t frozen</td></tr>
         <tr><td>Size</td><td>Huge optional</td><td>Slim: ~NDX + QQQ</td></tr>
-        <tr><td>Without paid EODHD</td><td>Keep files on disk forever</td><td><strong>IBKR History</strong> (default in medallion-vps)</td></tr>
+        <tr><td>Without paid EODHD</td><td>Keep files on disk forever</td><td><strong>IBKR History</strong> (default in vector)</td></tr>
         <tr><td>With EODHD paid</td><td>Same vendor as research</td><td><code>update_eod_daily</code></td></tr>
       </table>
       <div class="callout warn">
@@ -410,12 +410,12 @@ plot(lev, "Approx lev", color=color.new(color.fuchsia, 0), display=display.pane)
         <tr><th>WIB</th><th>Action</th></tr>
         <tr><td><strong>Fri 19:00</strong></td><td>Power on · start IB Gateway · 2FA</td></tr>
         <tr><td><strong>Fri 22:00</strong></td><td><strong>Download/refresh EOD</strong> (IBKR history or EODHD) until NDX+QQQ OK</td></tr>
-        <tr><td><strong>Sat 02:25</strong></td><td>L3: load disk → rank → size by lev → send orders</td></tr>
-        <tr><td><strong>Sat 02:30</strong></td><td>Alpha One (only if US month-end)</td></tr>
+        <tr><td><strong>Sat 02:25</strong></td><td>Gear: load disk → rank → size by lev → send orders</td></tr>
+        <tr><td><strong>Sat 02:30</strong></td><td>VECTOR Unit (only if US month-end)</td></tr>
         <tr><td><strong>Sat 09:00</strong></td><td>Optional power off</td></tr>
       </table>
-      <pre id="c-sched"><button class="copy" type="button">Copy</button># medallion-vps (Admin once)
-cd C:\algo\medallion-vps\scripts
+      <pre id="c-sched"><button class="copy" type="button">Copy</button># vector (Admin once)
+cd C:\algo\vector\scripts
 .\install_home_wib_tasks.ps1 -Provider ibkr
 
 # Manual Friday download test (Gateway must be up for ibkr):
@@ -434,14 +434,14 @@ cd C:\algo\medallion-vps\scripts
         </tr>
       </table>
       <div class="callout ok">Dashboard/backtest = EODHD. Live with IBKR history = <strong>same logic</strong>, not bit-identical prices. Fine for paper automation.</div>
-      <pre id="c-ibkr"><button class="copy" type="button">Copy</button>cd C:\algo\medallion-vps
+      <pre id="c-ibkr"><button class="copy" type="button">Copy</button>cd C:\algo\vector
 # Gateway paper running on 4002
 py -3.13 -u -m src.live.update_eod_ibkr --duration "2 Y"</pre>
     </div>
     <div class="card">
       <h2>Seed the VPS once</h2>
       <ol>
-        <li>Clone <code>medallion-vps</code> (includes PIT membership under <code>data/raw/universe</code>).</li>
+        <li>Clone <code>vector</code> (includes PIT membership under <code>data/raw/universe</code>).</li>
         <li>Run IBKR history pull for 2Y (or copy slim parquets from research for current NDX + QQQ).</li>
         <li>Confirm <code>QQQ.parquet</code> and ~100 member files exist under <code>data/raw/eodhd/eod</code>.</li>
         <li>Weekly: Friday 22:00 job refreshes bars; Saturday job only reads disk + trades.</li>
@@ -551,7 +551,7 @@ MAX_GROSS=0.97
         <pre id="c-first"><button class="copy" type="button">Copy</button>cd C:\algo\live-paper
 py -3.13 -u -m src.live.healthcheck
 py -3.13 -u -m src.live.run_paper_rebalance --force
-# After L3 files are on the VPS:
+# After Gear files are on the VPS:
 # py -3.13 -u -m src.live.run_paper_l3_rebalance --force</pre>
         <ul>
           <li>Healthcheck must connect to Gateway and see account.</li>
@@ -566,7 +566,7 @@ py -3.13 -u -m src.live.run_paper_rebalance --force
         <table>
           <tr><th>Task</th><th>When (conceptual)</th><th>Command idea</th></tr>
           <tr><td>Health</td><td>Every 15–30 min</td><td><code>run_healthcheck.ps1</code></td></tr>
-          <tr><td>Alpha One</td><td>Weekdays check; only trades month-end near 15:40–15:58 America/New_York</td><td><code>run_paper_rebalance</code></td></tr>
+          <tr><td>VECTOR Unit</td><td>Weekdays check; only trades month-end near 15:40–15:58 America/New_York</td><td><code>run_paper_rebalance</code></td></tr>
           <tr><td>L3</td><td>Weekdays check; only week-end session</td><td><code>run_paper_l3_rebalance</code></td></tr>
           <tr><td>Gateway</td><td>On boot + watchdog</td><td><code>start_ib_gateway.ps1</code></td></tr>
         </table>
@@ -612,7 +612,7 @@ py -3.13 -u -m src.live.run_paper_rebalance --force
     </div>
     <div class="card">
       <h2>Go-live sequence</h2>
-      <div class="step"><div class="n">1</div><div><h4>Freeze config</h4><p>Pick ONE sleeve to automate first (suggest Alpha One unlever OR L3 Sleeve — not Extreme first). Write the frozen params in a note.</p></div></div>
+      <div class="step"><div class="n">1</div><div><h4>Freeze config</h4><p>Pick ONE sleeve to automate first (suggest VECTOR Unit unlever OR VECTOR Gear — not Overdrive first). Write the frozen params in a note.</p></div></div>
       <div class="step"><div class="n">2</div><div><h4>Funding</h4><p>Deposit only what you can see draw down by the sim DD (~45–60%). Keep buffer for margin if levered.</p></div></div>
       <div class="step"><div class="n">3</div><div><h4>Live Gateway</h4><p>Separate login mode, port 4001 (confirm on your install), Read-Only OFF, trusted 127.0.0.1 only.</p></div></div>
       <div class="step"><div class="n">4</div><div><h4>New .env live</h4><p>Copy paper .env → <code>.env.live</code> with live account + port. Keep paper env intact for parallel paper if you want.</p></div></div>
@@ -627,7 +627,7 @@ py -3.13 -u -m src.live.run_paper_rebalance --force
         <li><code>state/KILL</code> file — create empty file to halt new orders (confirm your bot honors it — ours does).</li>
         <li><code>MAX_GROSS</code> &lt; 1 for cash buffer (e.g. 0.95–0.97 unlever; lever uses target_weight separately).</li>
         <li>Never open Gateway API to the public internet.</li>
-        <li>One strategy per account if possible (A1 vs L3).</li>
+        <li>One strategy per account if possible (A1 vs Gear).</li>
         <li>Tax / local regulation = your responsibility.</li>
       </ul>
     </div>
@@ -719,17 +719,17 @@ del state\KILL</pre>
     <div class="card">
       <h2>Suggested rollout order</h2>
       <ol>
-        <li>Paper Alpha One only (simplest)</li>
-        <li>Paper L3 Sleeve (weight = lev)</li>
+        <li>Paper VECTOR Unit only (simplest)</li>
+        <li>Paper VECTOR Gear (weight = lev)</li>
         <li>Optional paper Extreme on separate paper account</li>
-        <li>Live micro Alpha One or L3 — not both on day one</li>
+        <li>Live micro VECTOR Unit or Gear — not both on day one</li>
         <li>Scale capital only after multiple clean cycles</li>
       </ol>
       <div class="callout warn">This guide is implementation education, not investment advice. You are responsible for broker agreements, taxes, and risk.</div>
     </div>
   </section>
 
-  <footer class="footer">Next Medallion · Strategy School &amp; Implementation · research automation guide · not investment advice</footer>
+  <footer class="footer">VECTOR · Strategy School &amp; Implementation · research automation guide · not investment advice</footer>
 </div>
 <script>
 document.querySelectorAll('#nav button').forEach(b=>{
